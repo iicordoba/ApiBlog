@@ -14,12 +14,12 @@ namespace Models.Domain
         public bool Activo { get; set; }
         public Roles Rol { get; set; }
 
-        public void Update(Users user, Roles userRol)
+        public void Update(Users user)
         {
             this.User = user.User;
             this.Pass = user.Pass;
             this.Activo = user.Activo;
-            this.Rol = userRol;
+            this.Rol = user.Rol;
         }
     }
 }

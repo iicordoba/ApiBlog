@@ -60,7 +60,8 @@ namespace Services
             if (userToUpdate == null)
                 throw new Exception();
 
-            userToUpdate.Update(user, userRol);
+            userToUpdate.Update(user);
+            userToUpdate.Rol = userRol;
 
             return await _usersRepository.UpdateUser();
         }

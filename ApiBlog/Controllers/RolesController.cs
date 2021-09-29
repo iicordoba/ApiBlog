@@ -19,6 +19,10 @@ namespace Api.Controllers
             _rolesService = rolesService;
         }
 
+        /// <summary>
+        /// Obtiene todos los roles
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetRoles()
         {

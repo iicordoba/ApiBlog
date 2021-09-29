@@ -19,27 +19,14 @@ namespace Models.Domain
         public DateTime PublishedDate { get; set; }
         public bool Activo { get; set; }
 
-        public void Update(Posts post, Users user)
+        public void Update(Posts post)
         {
             this.Tittle = post.Tittle;
             this.Post = post.Post;
             this.Status = post.Status;
             this.UpdatedDate = DateTime.Now;
-            this.UpdatedBy = user;
-            this.PublishedDate = post.PublishedDate;
+            this.UpdatedBy = post.UpdatedBy;
             this.Activo = post.Activo;
         }
-
-        public void Publish(Posts post, Users user)
-        {
-            this.Tittle = post.Tittle;
-            this.Post = post.Post;
-            this.Status = post.Status;//set status as published
-            this.UpdatedDate = DateTime.Now;
-            this.UpdatedBy = user;
-            this.PublishedDate = DateTime.Now;
-            this.Activo = post.Activo;
-        }
-
     }
 }

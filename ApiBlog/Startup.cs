@@ -47,6 +47,8 @@ namespace ApiBlog
             services.AddTransient<IRolesService, RolesService>();
             services.AddTransient<ICommentsRepository, CommentsRepository>();
             services.AddTransient<ICommentsService, CommentsService>();
+            services.AddTransient<IUsersRepository, UsersRepository>();
+            services.AddTransient<IUsersService, UsersService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -33,12 +33,16 @@ namespace Services
                 SubmitedBy = user,
                 UpdatedDate = DateTime.Now,
                 UpdatedBy = user,
-                PublishedDate = post.PublishedDate,
                 Activo = post.Activo
             };
             return await _postsRepository.AddPost(newPost);
         }
 
+        /// <summary>
+        /// Metodo para eliminar un post
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<int> DeletePost(Guid id)
         {
             var postToDelete = await _postsRepository.GetPostById(id);
@@ -62,11 +66,11 @@ namespace Services
         public async Task<int> UpdatePost(Posts post, Guid userId)
         {
             var postToUpdate = await _postsRepository.GetPostById(post.Id);
-            var user = await _usersRepository.GetUserById(userId);
             if (postToUpdate == null)
                 throw new Exception();
 
-            postToUpdate.Update(post,user);
+            post.UpdatedBy = await _usersRepository.GetUserById(userId);
+            postToUpdate.Update(post);
 
             return await _postsRepository.UpdatePost(postToUpdate);
         }
@@ -78,9 +82,10 @@ namespace Services
             if (postToPublish == null)
                 throw new Exception();
 
-            postToPublish.Publish(postToPublish,user);
-
-
+            postToPublish.Status = 1; //VER CUAL ES EL STATUS DE PUBLISH
+            postToPublish.PublishedDate = DateTime.Now;
+            postToPublish.UpdatedDate = DateTime.Now;
+            
             return await _postsRepository.UpdatePost(postToPublish);
         }
     }

@@ -58,7 +58,7 @@ namespace Api.Controllers
             return Ok(await _postsService.UpdatePost(postToBeUpdated, post.UpdatedById));
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}/Publish")]
         public async Task<IActionResult> PublishPost([FromRoute] Guid id)
         {
             var userId = Guid.NewGuid();//set userId
