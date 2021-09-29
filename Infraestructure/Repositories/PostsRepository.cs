@@ -47,10 +47,9 @@ namespace Repositories
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<Posts> UpdatePost(Posts post)
+        public async Task<int> UpdatePost(Posts post)
         {
-            await _context.SaveChangesAsync();
-            return post;
+            return await _context.SaveChangesAsync();
         }
     }
 }

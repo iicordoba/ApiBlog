@@ -34,24 +34,24 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRol([FromBody] RolesAddDto rol)
         {
-            var rolToAdd = new Roles()
+            var rolToBeAdded = new Roles()
             {
                 Rol = rol.Rol,
                 Activo = rol.Activo
             };
-            return Ok(await _rolesService.AddRol(rolToAdd));
+            return Ok(await _rolesService.AddRol(rolToBeAdded));
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateRol([FromRoute] Guid id, [FromBody] RolesUpdateDto rol)
         {
-            var rolToUpdate = new Roles()
+            var rolToBeUpdated = new Roles()
             {
                 Id = id,
                 Rol = rol.Rol,
                 Activo = rol.Activo
             };
-            return Ok(await _rolesService.AddRol(rolToUpdate));
+            return Ok(await _rolesService.AddRol(rolToBeUpdated));
         }
 
         [HttpDelete("{id}")]

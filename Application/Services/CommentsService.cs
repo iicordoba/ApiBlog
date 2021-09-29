@@ -20,14 +20,14 @@ namespace Services
             _postsRepository = postsRepository;
         }
 
-        public async Task<Comments> AddComment(Comments comment)
+        public async Task<Comments> AddComment(Comments comment, Guid postId)
         {
-            var commentPost = await _postsRepository.GetPostById(comment.Post.Id);
+            var commentPost = await _postsRepository.GetPostById(postId);
             var newComment = new Comments()
             {
                 Comment = comment.Comment,
                 Name = comment.Name,
-                Post = commentPost,//¿por qué tengo que ir a buscar el post y no pasar directamente el objeto que me viene en comment.post?
+                Post = commentPost,
                 Activo = comment.Activo,
                 SubmitedDate = DateTime.Now
             };

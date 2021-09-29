@@ -12,7 +12,7 @@ namespace Interfaces.Services
     {
         Task<ICollection<Comments>> GetComments();
         Task<Comments> GetCommentById(Guid id);
-        Task<Comments> AddComment(Comments comment);
+        Task<Comments> AddComment(Comments comment, Guid postId);
         Task<int> DeleteComment(Guid id);
     }
 }

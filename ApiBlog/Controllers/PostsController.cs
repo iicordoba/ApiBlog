@@ -36,35 +36,33 @@ namespace Api.Controllers
         {
             var postToBeAdded = new Posts()
             {
-                Id = Guid.NewGuid(),
                 Tittle = post.Tittle,
                 Post = post.Post,
                 Status = post.Status,
-                SubmitedDate = post.SubmitedDate,
-                //SubmitedBy = await _context.Users.FindAsync(post.SubmitedById),
-                UpdatedDate = post.UpdatedDate,
-                //UpdatedBy = await _context.Users.FindAsync(post.UpdatedById),
-                PublishedDate = post.PublishedDate,
                 Activo = post.Activo
             };                       
-            return Ok(await _postsService.AddPost(postToBeAdded));
+            return Ok(await _postsService.AddPost(postToBeAdded,post.SubmitedById));
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> UpdatePost([FromBody] PostsUpdateDto post)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdatePost([FromRoute] Guid id,[FromBody] PostsUpdateDto post)
         {
-            var postToUpdate = new Posts()
+            var postToBeUpdated = new Posts()
             {
-                Id = Guid.NewGuid(),
+                Id = id,
                 Tittle = post.Tittle,
                 Post = post.Post,
-                Status = post.Status,                
-                UpdatedDate = post.UpdatedDate,
-                //UpdatedBy = await _context.Users.FindAsync(post.UpdatedById),
-                PublishedDate = post.PublishedDate,
+                Status = post.Status,   
                 Activo = post.Activo
             };
-            return Ok(await _postsService.UpdatePost(postToUpdate));
+            return Ok(await _postsService.UpdatePost(postToBeUpdated, post.UpdatedById));
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PublishPost([FromRoute] Guid id)
+        {
+            var userId = Guid.NewGuid();//set userId
+            return Ok(await _postsService.PublishPost(id,userId));
         }
 
         [HttpDelete("{id}")]

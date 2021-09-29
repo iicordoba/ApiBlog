@@ -36,28 +36,26 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser([FromBody] UsersAddDto user)
         {
-            var userToAdd = new Users()
+            var userToBeAdded = new Users()
             {
                 User = user.User,
                 Pass = user.Pass,
                 Activo = user.Activo,
-                Rol = user.Rol,
             };
-            return Ok(await _usersService.AddUser(userToAdd));
+            return Ok(await _usersService.AddUser(userToBeAdded, user.RolId));
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateUser([FromBody] UsersUpdateDto user, [FromRoute] Guid id)
         {
-            var userToUpdate = new Users()
+            var userToBeUpdated = new Users()
             {
                 Id = id,
                 User = user.User,
                 Pass = user.Pass,
                 Activo = user.Activo,
-                Rol = user.Rol,
             };
-            return Ok(await _usersService.AddUser(userToUpdate));
+            return Ok(await _usersService.UpdateUser(userToBeUpdated, user.RolId));
         }
 
         [HttpDelete("{id}")]

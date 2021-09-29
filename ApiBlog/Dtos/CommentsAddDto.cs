@@ -11,7 +11,7 @@ namespace Api.Dtos
         public string Name { get; set; }
         public string Comment { get; set; }
         public DateTime SubmitedDate { get; set; }
-        public Posts Post { get; set; }
+        public Guid PostId { get; set; }
         public bool Activo { get; set; }
     }
 }

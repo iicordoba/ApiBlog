@@ -11,6 +11,6 @@ namespace Api.Dtos
         public string User { get; set; }
         public string Pass { get; set; }
         public bool Activo { get; set; }
-        public Roles Rol { get; set; }
+        public Guid RolId { get; set; }
     }
 }

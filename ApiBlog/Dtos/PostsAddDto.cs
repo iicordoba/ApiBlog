@@ -10,11 +10,7 @@ namespace Api.Dtos
         public string Tittle { get; set; }
         public string Post { get; set; }
         public int Status { get; set; }
-        public DateTime SubmitedDate { get; set; }
         public Guid SubmitedById { get; set; }
-        public DateTime UpdatedDate { get; set; }
-        public Guid UpdatedById { get; set; }
-        public DateTime PublishedDate { get; set; }
         public bool Activo { get; set; }
 
     }

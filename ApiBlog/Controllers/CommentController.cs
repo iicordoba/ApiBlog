@@ -39,10 +39,9 @@ namespace Api.Controllers
             {
                 Comment = comment.Comment,
                 Name = comment.Name,
-                Post = comment.Post,
                 Activo = comment.Activo,
             };
-            return Ok(await _commentService.AddComment(commentToBeAdded));
+            return Ok(await _commentService.AddComment(commentToBeAdded, comment.PostId));
         }
 
         [HttpDelete("{id}")]

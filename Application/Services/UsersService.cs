@@ -20,9 +20,9 @@ namespace Services
             _rolesRepository = rolesRepository;
         }
 
-        public async Task<Users> AddUser(Users user)
+        public async Task<Users> AddUser(Users user, Guid rolId)
         {
-            var userRol = await _rolesRepository.GetRolById(user.Rol.Id);
+            var userRol = await _rolesRepository.GetRolById(rolId);
             var newUser = new Users()
             {
                 User = user.User,
@@ -53,14 +53,14 @@ namespace Services
             return await _usersRepository.GetUsers();
         }
 
-        public async Task<int> UpdateUser(Users user)
+        public async Task<int> UpdateUser(Users user, Guid rolId)
         {
             var userToUpdate = await _usersRepository.GetUserById(user.Id);
-
+            var userRol = await _rolesRepository.GetRolById(rolId);
             if (userToUpdate == null)
                 throw new Exception();
 
-            userToUpdate.Update(user);
+            userToUpdate.Update(user, userRol);
 
             return await _usersRepository.UpdateUser();
         }
