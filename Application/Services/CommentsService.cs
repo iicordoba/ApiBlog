@@ -3,8 +3,6 @@ using Interfaces.Services;
 using Models.Domain;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Services
@@ -17,7 +15,7 @@ namespace Services
         public CommentsService(ICommentsRepository commentsRepository, IPostsRepository postsRepository)
         {
             _commentsRepository = commentsRepository;
-            _postsRepository = postsRepository;
+            this._postsRepository = postsRepository;
         }
 
         public async Task<Comments> AddComment(Comments comment, Guid postId)

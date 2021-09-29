@@ -1,14 +1,11 @@
-﻿using Api.Dtos;
-using Interfaces.Repositories;
+﻿using System;
+using System.Threading.Tasks;
+using ApiBlog.Dtos;
 using Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Models.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Api.Controllers
+namespace ApiBlog.Controllers
 {
     [ApiController]
     [Route("[controller]")]

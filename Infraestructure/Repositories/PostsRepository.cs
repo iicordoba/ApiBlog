@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Repositories
@@ -40,11 +38,6 @@ namespace Repositories
         {
             //return await _context.Posts.Include(x => x.UpdatedBy).ThenInclude(y => y.Rol).ToListAsync();
             return await _context.Posts.ToListAsync();
-        }
-
-        public async Task<int> SaveChangeAsync()
-        {
-            return await _context.SaveChangesAsync();
         }
 
         public async Task<int> UpdatePost(Posts post)

@@ -3,8 +3,6 @@ using Interfaces.Services;
 using Models.Domain;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Services
@@ -78,14 +76,14 @@ namespace Services
         public async Task<int> PublishPost(Guid id, Guid userId)
         {
             var postToPublish = await _postsRepository.GetPostById(id);
-            var user = await _usersRepository.GetUserById(userId);
             if (postToPublish == null)
                 throw new Exception();
 
             postToPublish.Status = 1; //VER CUAL ES EL STATUS DE PUBLISH
             postToPublish.PublishedDate = DateTime.Now;
             postToPublish.UpdatedDate = DateTime.Now;
-            
+            postToPublish.UpdatedBy = await _usersRepository.GetUserById(userId);
+
             return await _postsRepository.UpdatePost(postToPublish);
         }
     }
