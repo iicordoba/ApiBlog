@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Repositories;
 using Services;
+using System;
 
 namespace ApiBlog
 {
@@ -33,6 +34,17 @@ namespace ApiBlog
 
             services.AddDbContext<Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Context")));
+
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(3600);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             services.AddTransient<IPostsRepository, PostsRepository>();
             services.AddTransient<IPostsService, PostsService>();
@@ -59,6 +71,8 @@ namespace ApiBlog
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

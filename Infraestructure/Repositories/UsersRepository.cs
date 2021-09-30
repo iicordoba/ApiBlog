@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repositories
@@ -31,7 +32,7 @@ namespace Repositories
         public async Task<Users> GetUserById(Guid id)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-        }
+        }        
 
         public async Task<ICollection<Users>> GetUsers()
         {
@@ -41,6 +42,11 @@ namespace Repositories
         public async Task<int> UpdateUser()
         {
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<Users> GetUserByUserNameAndPass(string user, string pass)
+        {
+            return await _context.Users.Where(u => u.User == user && u.Pass == pass).FirstOrDefaultAsync();
         }
     }
 }

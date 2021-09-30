@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using ApiBlog.Dtos;
 using Interfaces.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Domain;
 
@@ -20,13 +21,13 @@ namespace ApiBlog.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPosts()
         {
-            return Ok(await _postsService.GetPosts());
+            return Ok(await _postsService.GetPosts(HttpContext.Session.GetString("user"), HttpContext.Session.GetString("pass")));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPostById([FromRoute] Guid id)
         {
-            return Ok(await _postsService.GetPostById(id));
+            return Ok(await _postsService.GetPostById(id, HttpContext.Session.GetString("user"), HttpContext.Session.GetString("pass")));
         }
 
         [HttpPost]
@@ -36,7 +37,7 @@ namespace ApiBlog.Controllers
             {
                 Tittle = post.Tittle,
                 Post = post.Post,
-                Status = post.Status,
+                Status = Models.Enumeration.EstadoPost.Pending,
                 Activo = post.Activo
             };                       
             return Ok(await _postsService.AddPost(postToBeAdded,post.SubmitedById));
@@ -59,14 +60,13 @@ namespace ApiBlog.Controllers
         [HttpPatch("{id}/Publish")]
         public async Task<IActionResult> PublishPost([FromRoute] Guid id)
         {
-            var userId = Guid.NewGuid();//set userId
-            return Ok(await _postsService.PublishPost(id,userId));
+            return Ok(await _postsService.PublishPost(id, HttpContext.Session.GetString("user"), HttpContext.Session.GetString("pass")));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost([FromRoute] Guid id)
         {            
-            return Ok(await _postsService.DeletePost(id));
+            return Ok(await _postsService.DeletePost(id, HttpContext.Session.GetString("user"), HttpContext.Session.GetString("pass")));
         }
     }
 }

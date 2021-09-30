@@ -18,12 +18,7 @@ namespace Services
 
         public async Task<Roles> AddRol(Roles rol)
         {
-            var newRol = new Roles()
-            {
-                Rol = rol.Rol,
-                Activo = rol.Activo,
-            };
-            return await _rolesRepository.AddRol(newRol);
+            return await _rolesRepository.AddRol(rol);
         }
 
         public async Task<int> DeleteRol(Guid id)
@@ -46,7 +41,7 @@ namespace Services
             return await _rolesRepository.GetRoles();
         }
 
-        public async Task<int> UpdateRol(Roles rol)
+        public async Task<Roles> UpdateRol(Roles rol)
         {
             var rolToUpdate = await _rolesRepository.GetRolById(rol.Id);
 
@@ -55,7 +50,8 @@ namespace Services
 
             rolToUpdate.Update(rol);
 
-            return await _rolesRepository.UpdateRol();
+            await _rolesRepository.UpdateRol();
+            return rol;
         }
     }
 }

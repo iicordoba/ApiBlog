@@ -10,7 +10,7 @@ namespace Interfaces.Services
         Task<ICollection<Roles>> GetRoles();
         Task<Roles> GetRolById(Guid id);
         Task<Roles> AddRol(Roles rol);
-        Task<int> UpdateRol(Roles rol);
+        Task<Roles> UpdateRol(Roles rol);
         Task<int> DeleteRol(Guid id);
     }
 }

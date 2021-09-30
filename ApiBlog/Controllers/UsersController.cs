@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using ApiBlog.Dtos;
 using Interfaces.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Domain;
 
@@ -15,7 +16,7 @@ namespace ApiBlog.Controllers
 
         public UsersController(IUsersService usersService)
         {
-            _usersService = usersService;            
+            _usersService = usersService;
         }
 
         [HttpGet]
@@ -59,6 +60,26 @@ namespace ApiBlog.Controllers
         public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
         {
             return Ok(await _usersService.DeleteUser(id));
+        }
+
+        [HttpGet("login")]
+        public async Task<IActionResult> Login([FromQuery] string user, string pass)
+        {
+            var result = await _usersService.Login(user, pass);
+
+            HttpContext.Session.SetString("user", result.User);
+            HttpContext.Session.SetString("pass", result.Pass);
+
+            return Ok(result);            
+        }
+
+        [HttpGet("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.SetString("user", null);
+            HttpContext.Session.SetString("pass", null);
+
+            return Ok();
         }
     }
 }

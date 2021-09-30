@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+
 namespace Services
 {
     public class UsersService : IUsersService
@@ -50,7 +51,7 @@ namespace Services
         {
             return await _usersRepository.GetUsers();
         }
-
+                
         public async Task<int> UpdateUser(Users user, Guid rolId)
         {
             var userToUpdate = await _usersRepository.GetUserById(user.Id);
@@ -62,6 +63,15 @@ namespace Services
             userToUpdate.Rol = userRol;
 
             return await _usersRepository.UpdateUser();
+        }
+
+        public async Task<Users> Login(string user, string pass)
+        {
+            var loggedUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
+            if (loggedUser == null)
+                throw new Exception();
+
+            return loggedUser;
         }
     }
 }

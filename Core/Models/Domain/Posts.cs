@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Enumeration;
+using System;
 
 namespace Models.Domain
 {
@@ -7,7 +8,7 @@ namespace Models.Domain
         public Guid Id { get; set; }
         public string Tittle { get; set; }
         public string Post { get; set; }
-        public int Status { get; set; }
+        public EstadoPost Status { get; set; }
         public DateTime SubmitedDate { get; set; }
         public Users SubmitedBy { get; set; }
         public DateTime UpdatedDate { get; set; }

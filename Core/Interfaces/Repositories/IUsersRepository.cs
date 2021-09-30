@@ -12,5 +12,6 @@ namespace Interfaces.Repositories
         Task<Users> AddUser(Users user);
         Task<int> UpdateUser();
         Task<int> DeleteUser(Users user);
+        Task<Users> GetUserByUserNameAndPass(string user, string pass);
     }
 }
