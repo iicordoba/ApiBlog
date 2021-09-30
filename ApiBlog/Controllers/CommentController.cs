@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApiBlog.Dtos;
+using AutoMapper;
 using Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Models.Domain;
@@ -12,34 +14,30 @@ namespace ApiBlog.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ICommentsService _commentService;
+        private readonly IMapper _mapper;
 
-        public CommentController(ICommentsService commentService)
+        public CommentController(ICommentsService commentService, IMapper mapper)
         {
             _commentService = commentService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetComments()
         {
-            return Ok(await _commentService.GetComments());
+            return Ok(_mapper.Map<List<CommentsResponseDto>>(await _commentService.GetComments()));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCommentById([FromRoute] Guid id)
         {
-            return Ok(await _commentService.GetCommentById(id));
+            return Ok(_mapper.Map<CommentsResponseDto>(await _commentService.GetCommentById(id)));
         }
 
         [HttpPost]
         public async Task<IActionResult> AddComment([FromBody] CommentsAddDto comment)
         {
-            var commentToBeAdded = new Comments()
-            {
-                Comment = comment.Comment,
-                Name = comment.Name,
-                Activo = comment.Activo,
-            };
-            return Ok(await _commentService.AddComment(commentToBeAdded, comment.PostId));
+            return Ok(_mapper.Map<CommentsResponseDto>(await _commentService.AddComment(_mapper.Map<Comments>(comment), comment.PostId)));
         }
 
         [HttpDelete("{id}")]

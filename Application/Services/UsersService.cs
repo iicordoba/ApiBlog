@@ -52,17 +52,17 @@ namespace Services
             return await _usersRepository.GetUsers();
         }
                 
-        public async Task<int> UpdateUser(Users user, Guid rolId)
+        public async Task<Users> UpdateUser(Users user, Guid rolId)
         {
             var userToUpdate = await _usersRepository.GetUserById(user.Id);
-            var userRol = await _rolesRepository.GetRolById(rolId);
             if (userToUpdate == null)
                 throw new Exception();
 
             userToUpdate.Update(user);
-            userToUpdate.Rol = userRol;
+            userToUpdate.Rol = await _rolesRepository.GetRolById(rolId);
 
-            return await _usersRepository.UpdateUser();
+            await _usersRepository.UpdateUser();
+            return user;
         }
 
         public async Task<Users> Login(string user, string pass)

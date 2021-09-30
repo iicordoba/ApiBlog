@@ -16,7 +16,21 @@ namespace ApiBlog.AutoMapper
                 .ForMember(x => x.Nombre, y => y.MapFrom(z => z.Rol));
 
             CreateMap<RolesAddDto, Roles>();
+
             CreateMap<RolesUpdateDto, Roles>();
+
+            CreateMap<Users, UsersResponseDto>();
+
+            CreateMap<UsersAddDto, Users>()
+                .ForMember(x => x.Rol, y => y.Ignore());
+
+            CreateMap<UsersUpdateDto, Users>()
+                .ForMember(x => x.Rol, y => y.Ignore());
+
+            CreateMap<Comments, CommentsResponseDto>();
+
+            CreateMap<CommentsAddDto, Comments>()
+                .ForMember(x => x.Post, y => y.Ignore());
         }
     }
 }

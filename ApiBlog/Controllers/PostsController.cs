@@ -50,8 +50,7 @@ namespace ApiBlog.Controllers
             {
                 Id = id,
                 Tittle = post.Tittle,
-                Post = post.Post,
-                Status = post.Status,   
+                Post = post.Post,                  
                 Activo = post.Activo
             };
             return Ok(await _postsService.UpdatePost(postToBeUpdated, post.UpdatedById));
