@@ -12,6 +12,6 @@ namespace Interfaces.Services
         Task<Posts> AddPost(Posts post, Guid userId);
         Task<int> UpdatePost(Posts post, Guid userId);
         Task<int> DeletePost(Guid id, string user, string pass);
-        Task<int> PublishPost(Guid id, string user, string pass);
+        Task<int> UpdatePostStatus(Posts post, string user, string pass);
     }
 }
