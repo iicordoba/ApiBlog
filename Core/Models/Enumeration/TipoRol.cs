@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Models.Enumeration
 {
-    class TipoRol
+    public enum TipoRol
     {
+        Writer,
+        Editor
     }
 }

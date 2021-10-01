@@ -23,23 +23,19 @@ namespace ApiBlog.AutoMapper
 
             CreateMap<PostsAddDto, Posts>();
 
-            CreateMap<PostsUpdateDto, Posts>()
-                .ForMember(x => x.UpdatedBy, y => y.Ignore());
+            CreateMap<PostsUpdateDto, Posts>();
 
             CreateMap<PostsUpdateStatusDto, Posts>();
 
             CreateMap<Users, UsersResponseDto>();
 
-            CreateMap<UsersAddDto, Users>()
-                .ForMember(x => x.Rol, y => y.Ignore());
+            CreateMap<UsersAddDto, Users>();
 
-            CreateMap<UsersUpdateDto, Users>()
-                .ForMember(x => x.Rol, y => y.Ignore());
+            CreateMap<UsersUpdateDto, Users>();
 
             CreateMap<Comments, CommentsResponseDto>();
 
-            CreateMap<CommentsAddDto, Comments>()
-                .ForMember(x => x.Post, y => y.Ignore());
+            CreateMap<CommentsAddDto, Comments>();
         }
     }
 }

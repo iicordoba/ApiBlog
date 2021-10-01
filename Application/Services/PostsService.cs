@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.Enumeration;
+using System.Linq;
 
 namespace Services
 {
@@ -12,30 +13,28 @@ namespace Services
     {
         private readonly IPostsRepository _postsRepository;
         private readonly IUsersRepository _usersRepository;
-        private readonly string _editor = "Editor";
-        private readonly string _escritor = "Escritor";
-
-
 
         public PostsService(IPostsRepository postsRepository, IUsersRepository usersRepository)
         {
             _postsRepository = postsRepository;
             _usersRepository = usersRepository;
         }
-        public async Task<Posts> AddPost(Posts post, Guid userId)
+        public async Task<Posts> AddPost(Posts post, string user, string pass)
         {
-            var user = await _usersRepository.GetUserById(userId);
-            if (user == null)
+            var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
+            if (givenUser == null)
                 throw new Exception();
+            if (givenUser.Rol.TipoRol != TipoRol.Writer)
+                throw new Exception("Su usuario no posee los permisos necesarios");
             var newPost = new Posts() 
             {
                 Tittle = post.Tittle,
                 Post = post.Post,
                 Status = EstadoPost.Pending,
                 SubmitedDate = DateTime.Now,
-                SubmitedBy = user,
+                SubmitedBy = givenUser,
                 UpdatedDate = DateTime.Now,
-                UpdatedBy = user,
+                UpdatedBy = givenUser,
                 Activo = post.Activo
             };
             return await _postsRepository.AddPost(newPost);
@@ -46,14 +45,21 @@ namespace Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<int> DeletePost(Guid id, string user, string pass)
+        public async Task<int> DeletePost(Guid id, string user, string pass)// chequar que Writer solo borra
         {
+            var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
+
+            if (givenUser == null)
+                throw new Exception();
+            if (givenUser.Rol.TipoRol != TipoRol.Writer)
+                throw new Exception("Su usuario no posee los permisos necesarios");
+
             var postToDelete = await _postsRepository.GetPostById(id);
+
             if (postToDelete == null)
                 throw new Exception();
 
-            return await _postsRepository.DeletePost(postToDelete);
-            
+            return await _postsRepository.DeletePost(postToDelete);            
         }
 
         public async Task<Posts> GetPostById(Guid id, string user, string pass)
@@ -61,17 +67,24 @@ namespace Services
             var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
             var post = await _postsRepository.GetPostById(id);
 
-            if (givenUser.Rol.Rol == _editor) //devuelvo los posts que se encuentran como "Submitted"
+            if (givenUser == null)
             {
+                if (post.Status == EstadoPost.Published && post.Activo is true)
+                    return post;
                 throw new Exception("Su usuario no posee los permisos necesarios");
             }
-            if (givenUser.Rol.Rol == _escritor) //devuelvo los posts que se encuentran como "Pending" y "Rejected"
+            if (givenUser.Rol.TipoRol == TipoRol.Editor) 
             {
+                if (post.Status == EstadoPost.Submitted || post.Status == EstadoPost.Published)
+                    return post;
                 throw new Exception("Su usuario no posee los permisos necesarios");
             }
-            //el rol del user es lector - devuelvo los posts que se encuentran como "Published"
-            if(post.Status == EstadoPost.Published)
-                return post;
+            if (givenUser.Rol.TipoRol == TipoRol.Writer) 
+            {
+                if((post.Status == EstadoPost.Pending || post.Status == EstadoPost.Rejected) && post.Activo is true)
+                    return post;
+                throw new Exception("Su usuario no posee los permisos necesarios");
+            }
             throw new Exception("Su usuario no posee los permisos necesarios");
         }
 
@@ -79,50 +92,58 @@ namespace Services
         {
             var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
             var posts = await _postsRepository.GetPosts();
+            
+            if (givenUser == null)
+                return posts.Where(x => x.Status == EstadoPost.Published && x.Activo is true).ToList();
 
-            if (givenUser.Rol.Rol == _editor) //devuelvo los posts que se encuentran como "Submitted"
-            {
-                if (posts.Status == EstadoPost.Submitted || posts.Status == EstadoPost.Published)
-                    return posts;
-                throw new Exception("Su usuario no posee los permisos necesarios");
-            }
-            if (givenUser.Rol.Rol == _escritor) //devuelvo los posts que se encuentran como "Pending" y "Rejected"
-            {
-                if (post.Status == EstadoPost.Pending || post.Status == EstadoPost.Published || post.Status == EstadoPost.Rejected)
-                    return post;
-                throw new Exception("Su usuario no posee los permisos necesarios");
-            }
-            //el rol del user es lector - devuelvo los posts que se encuentran como "Published"
-            if (post.Status == EstadoPost.Published)
-                return post;
-            throw new Exception("Su usuario no posee los permisos necesarios");
+            if (givenUser.Rol.TipoRol == TipoRol.Editor) 
+                return posts.Where(x => x.Status == EstadoPost.Submitted || x.Status == EstadoPost.Published).ToList();
+            
+            return posts.Where(x => (x.Status == EstadoPost.Pending || x.Status == EstadoPost.Rejected) && x.Activo is true).ToList();            
         }
 
-        public async Task<int> UpdatePost(Posts post, Guid userId)
+        public async Task<Posts> UpdatePost(Posts post, string user, string pass)
         {
+            var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
+            
+            if (givenUser == null)
+                throw new Exception("Su usuario no posee los permisos necesarios");
+
             var postToUpdate = await _postsRepository.GetPostById(post.Id);
+
             if (postToUpdate == null)
                 throw new Exception();
 
-            post.UpdatedBy = await _usersRepository.GetUserById(userId);
-            postToUpdate.Update(post);
+            if (givenUser.Rol.TipoRol == TipoRol.Editor)
+            {
+                if (postToUpdate.Status == EstadoPost.Submitted)
+                {
+                    if (post.Status == EstadoPost.Published || post.Status == EstadoPost.Rejected)
+                    {
+                        postToUpdate.Status = post.Status;
+                        if (post.Status == EstadoPost.Published)
+                            postToUpdate.PublishedDate = DateTime.Now;
+                    }                        
+                }
+                postToUpdate.Activo = post.Activo;
+            }
+            if (givenUser.Rol.TipoRol == TipoRol.Writer)
+            {
+                if (postToUpdate.Status == EstadoPost.Pending || postToUpdate.Status == EstadoPost.Rejected)
+                {
+                    if (post.Status == EstadoPost.Pending || post.Status == EstadoPost.Submitted)
+                        postToUpdate.Status = post.Status;
+                }
+                postToUpdate.Tittle = post.Tittle;
+                postToUpdate.Post = post.Post;
+            }
 
-            return await _postsRepository.UpdatePost(postToUpdate);
-        }
+            postToUpdate.UpdatedDate = DateTime.Now;
+            postToUpdate.UpdatedBy = givenUser;
 
-        public async Task<int> UpdatePostStatus(Posts post, string user, string pass)
-        {
-            var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
-            var postToPublish = await _postsRepository.GetPostById(post.Id);
-            if (postToPublish == null)
-                throw new Exception();
+            await _postsRepository.UpdatePost(postToUpdate);
 
-            postToPublish.Status = 1; //VER CUAL ES EL STATUS DE PUBLISH
-            postToPublish.PublishedDate = DateTime.Now;
-            postToPublish.UpdatedDate = DateTime.Now;
-            postToPublish.UpdatedBy = givenUser;
-
-            return await _postsRepository.UpdatePost(postToPublish);
+            return postToUpdate;
         }
     }
 }

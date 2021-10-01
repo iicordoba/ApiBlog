@@ -37,20 +37,14 @@ namespace ApiBlog.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPost([FromBody] PostsAddDto post)
         {
-            return Ok(_mapper.Map<PostsResponseDto>(await _postsService.AddPost(_mapper.Map<Posts>(post),post.SubmitedById)));
+            return Ok(_mapper.Map<PostsResponseDto>(await _postsService.AddPost(_mapper.Map<Posts>(post), HttpContext.Session.GetString("user"), HttpContext.Session.GetString("pass"))));
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdatePost([FromBody] PostsUpdateDto post)
         {
-            return Ok(_mapper.Map<PostsResponseDto>(await _postsService.UpdatePost(_mapper.Map<Posts>(post), post.UpdatedById)));
-        }
-
-        [HttpPatch("{id}/Publish")]
-        public async Task<IActionResult> UpdatePostStatus([FromBody] PostsUpdateStatusDto post)
-        {
-            return Ok(await _postsService.UpdatePostStatus(_mapper.Map<Posts>(post), HttpContext.Session.GetString("user"), HttpContext.Session.GetString("pass")));
-        }
+            return Ok(_mapper.Map<PostsResponseDto>(await _postsService.UpdatePost(_mapper.Map<Posts>(post), HttpContext.Session.GetString("user"), HttpContext.Session.GetString("pass"))));
+        }        
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost([FromRoute] Guid id)

@@ -9,9 +9,8 @@ namespace Interfaces.Services
     {
         Task<ICollection<Posts>> GetPosts(string user, string pass);
         Task<Posts> GetPostById(Guid id, string user, string pass);
-        Task<Posts> AddPost(Posts post, Guid userId);
-        Task<int> UpdatePost(Posts post, Guid userId);
-        Task<int> DeletePost(Guid id, string user, string pass);
-        Task<int> UpdatePostStatus(Posts post, string user, string pass);
+        Task<Posts> AddPost(Posts post, string user, string pass);
+        Task<Posts> UpdatePost(Posts post, string user, string pass);
+        Task<int> DeletePost(Guid id, string user, string pass);        
     }
 }
