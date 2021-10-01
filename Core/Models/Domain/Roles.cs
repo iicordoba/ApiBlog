@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Enumeration;
+using System;
 
 namespace Models.Domain
 {
@@ -6,6 +7,7 @@ namespace Models.Domain
     {
         public Guid Id { get; set; }
         public string Rol { get; set; }
+        public TipoRol TipoRol { get; set; }
         public bool Activo { get; set; }
 
         public void Update(Roles rol)
