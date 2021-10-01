@@ -19,6 +19,14 @@ namespace Services
             _postsRepository = postsRepository;
             _usersRepository = usersRepository;
         }
+
+        /// <summary>
+        /// Metodo para agregar un post, mientras el rol sea Writer
+        /// </summary>
+        /// <param name="post"></param>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <returns></returns>
         public async Task<Posts> AddPost(Posts post, string user, string pass)
         {
             var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
@@ -45,7 +53,7 @@ namespace Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<int> DeletePost(Guid id, string user, string pass)// chequar que Writer solo borra
+        public async Task<int> DeletePost(Guid id, string user, string pass)
         {
             var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
 
@@ -62,6 +70,13 @@ namespace Services
             return await _postsRepository.DeletePost(postToDelete);            
         }
 
+        /// <summary>
+        /// Metodo para obtener un post por id, segun el Status del post y el Rol del usuario
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <returns></returns>
         public async Task<Posts> GetPostById(Guid id, string user, string pass)
         {
             var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
@@ -88,6 +103,12 @@ namespace Services
             throw new Exception("Su usuario no posee los permisos necesarios");
         }
 
+        /// <summary>
+        /// Metodo para obtener una lista de posts, segun el Status de los posts y el Rol del usuario
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <returns></returns>
         public async Task<ICollection<Posts>> GetPosts(string user, string pass)
         {
             var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
@@ -102,6 +123,13 @@ namespace Services
             return posts.Where(x => (x.Status == EstadoPost.Pending || x.Status == EstadoPost.Rejected) && x.Activo is true).ToList();            
         }
 
+        /// <summary>
+        /// Metodo para editar un post, segun el Rol del usuario se permite editar ciertos campos
+        /// </summary>
+        /// <param name="post"></param>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <returns></returns>
         public async Task<Posts> UpdatePost(Posts post, string user, string pass)
         {
             var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
