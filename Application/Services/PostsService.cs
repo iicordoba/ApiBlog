@@ -31,7 +31,7 @@ namespace Services
         {
             var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
             if (givenUser == null)
-                throw new Exception();
+                throw new Exception("No hay ningún usuario logeado");
             if (givenUser.Rol.TipoRol != TipoRol.Writer)
                 throw new Exception("Su usuario no posee los permisos necesarios");
             var newPost = new Posts() 
@@ -58,14 +58,14 @@ namespace Services
             var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
 
             if (givenUser == null)
-                throw new Exception();
+                throw new Exception("El usuario no existe");
             if (givenUser.Rol.TipoRol != TipoRol.Writer)
                 throw new Exception("Su usuario no posee los permisos necesarios");
 
             var postToDelete = await _postsRepository.GetPostById(id);
 
             if (postToDelete == null)
-                throw new Exception();
+                throw new Exception("El post no existe");
 
             return await _postsRepository.DeletePost(postToDelete);            
         }
@@ -81,26 +81,26 @@ namespace Services
         {
             var givenUser = await _usersRepository.GetUserByUserNameAndPass(user, pass);
             var post = await _postsRepository.GetPostById(id);
-
+            
             if (givenUser == null)
             {
                 if (post.Status == EstadoPost.Published && post.Activo is true)
                     return post;
-                throw new Exception("Su usuario no posee los permisos necesarios");
+                throw new Exception("No se encuentraron post para su usuario");
             }
             if (givenUser.Rol.TipoRol == TipoRol.Editor) 
             {
                 if (post.Status == EstadoPost.Submitted || post.Status == EstadoPost.Published)
                     return post;
-                throw new Exception("Su usuario no posee los permisos necesarios");
+                throw new Exception("No se encuentraron post para su usuario");
             }
             if (givenUser.Rol.TipoRol == TipoRol.Writer) 
             {
                 if((post.Status == EstadoPost.Pending || post.Status == EstadoPost.Rejected) && post.Activo is true)
                     return post;
-                throw new Exception("Su usuario no posee los permisos necesarios");
+                throw new Exception("No se encuentraron post para su usuario");
             }
-            throw new Exception("Su usuario no posee los permisos necesarios");
+            throw new Exception("No se encuentraron post para su usuario");
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Services
             var postToUpdate = await _postsRepository.GetPostById(post.Id);
 
             if (postToUpdate == null)
-                throw new Exception();
+                throw new Exception("El post no existe");
 
             if (givenUser.Rol.TipoRol == TipoRol.Editor)
             {
